@@ -1,2 +1,4 @@
 .venv/
 .idea/
+eMallBackend/__pycache__
+Auth/__pycache__
