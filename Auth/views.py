@@ -7,15 +7,20 @@ def signUpUser(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # 哈希密码
-            form.instance.password = make_password(form.cleaned_data['password'])
-            form.save()  # 保存用户信息
-            return redirect('/signin')  # 注册成功后重定向到登录页面
+            try:
+                if form.cleaned_data['password'] == form.cleaned_data['confirm_password']:
+                    # 哈希密码
+                    form.instance.password = make_password(form.cleaned_data['password'])
+                    form.save()  # 保存用户信息
+                    return redirect('/signin')  # 注册成功后重定向到登录页面
+                else:
+                    form.add_error('confirm_password', 'the passwords do not match')
+            except Exception as e:
+                form.add_error(None, f'error: {e}')
     else:
         form = SignUpForm()
 
     return render(request, 'signup.html', {'form': form})
-
 
 def signInUser(request):
     if request.method == 'POST':
