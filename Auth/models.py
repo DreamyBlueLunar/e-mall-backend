@@ -16,9 +16,35 @@ class UserInfo(models.Model):
     email = models.CharField(max_length=64, null=False, unique=True)
     # 用户类型 -> 1：普通用户，2：商家，3：管理员
     category = models.IntegerField(default=1)
+    # 注册时间
+    regTime = models.DateTimeField(auto_now_add=True)
+    # 是否确认注册（有没有点过邮箱中的链接）
+    hasConfirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         db_table = 'user_info'
+        ordering = ['regTime']
+        verbose_name = "user_info"
+        verbose_name_plural = "user_info"
+
+
+class ConfirmCode(models.Model):
+    # 确认码
+    code = models.CharField(max_length=256)
+    user = models.OneToOneField('UserInfo', on_delete=models.CASCADE, )
+    regTime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + ":   " + self.code
+
+    class Meta:
+        db_table = 'confirm_code'
+        ordering = ['regTime']
+        verbose_name = 'confirm-code'
+        verbose_name_plural = 'confirm-code'
 
 # # 地址信息表
 # class Address(models.Model):
