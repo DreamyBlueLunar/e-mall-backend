@@ -1,15 +1,23 @@
-from django.forms import ModelForm, TextInput, PasswordInput
+from django.forms import ModelForm, TextInput, PasswordInput, CharField
 
 from Auth.models import UserInfo
 
 
 class SignUpForm(ModelForm):
+    confirm_password = CharField(
+        label = 'confirm password',
+        widget = PasswordInput(attrs={'class': 'form-control'}),
+        strip = False,
+        help_text = 'input password again'
+    )
+
     class Meta:
         model = UserInfo
-        fields = ['username', 'password', 'telephone' ,'email']
+        fields = ['username', 'password', 'confirm_password' ,'telephone' ,'email']
         labels = {
             'username': 'username',
             'password': 'password',
+            'confirm_password': 'confirm_password',
             'telephone': 'telephone',
             'email': 'email'
         }
@@ -17,6 +25,7 @@ class SignUpForm(ModelForm):
         widgets = {
             'username': TextInput(attrs={'class': 'form-control'}),
             'password': PasswordInput(attrs={'class': 'form-control'}),
+            'confirm_password': PasswordInput(attrs={'class': 'form-control'}),
             'telephone': TextInput(attrs={'class': 'form-control'}),
             'email': TextInput(attrs={'class': 'form-control'}),
         }
