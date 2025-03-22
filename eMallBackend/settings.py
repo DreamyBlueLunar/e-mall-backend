@@ -146,3 +146,10 @@ SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_AGE = 60 * 60 * 12 # 12小时
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True # 关闭浏览器，则COOKIE失效
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sina.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'moony_yusuke@sina.com'
+EMAIL_HOST_PASSWORD = '55ae8c556dd3426d'
