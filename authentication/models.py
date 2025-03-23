@@ -1,6 +1,12 @@
 from django.db import models
 
 # Create your models here.
+from datetime import timezone, datetime
+
+from django.db import models
+
+
+# Create your models here.
 
 # 用户信息表
 class UserInfo(models.Model):
@@ -31,10 +37,13 @@ class UserInfo(models.Model):
         verbose_name_plural = "user_info"
 
 
+# 其实后面我们可以考虑把这个东西放到redis里面去，因为它本质上就是一系列即用即删的记录
 class ConfirmCode(models.Model):
     # 确认码
     code = models.CharField(max_length=256)
-    user = models.OneToOneField('UserInfo', on_delete=models.CASCADE, )
+    # 用户，关联UserInfo表中的一条记录
+    user = models.OneToOneField('UserInfo', on_delete=models.CASCADE)
+    # 注册时间
     regTime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -43,8 +52,8 @@ class ConfirmCode(models.Model):
     class Meta:
         db_table = 'confirm_code'
         ordering = ['regTime']
-        verbose_name = 'confirm-code'
-        verbose_name_plural = 'confirm-code'
+        verbose_name = 'confirm.html-code'
+        verbose_name_plural = 'confirm.html-code'
 
 # # 地址信息表
 # class Address(models.Model):
