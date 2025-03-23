@@ -1,19 +1,18 @@
 from django.forms import ModelForm, TextInput, PasswordInput, CharField
 
-from Auth.models import UserInfo
+from authentication.models import UserInfo
 
 
 class SignUpForm(ModelForm):
     confirm_password = CharField(
-        label = 'confirm password',
-        widget = PasswordInput(attrs={'class': 'form-control'}),
-        strip = False,
-        help_text = 'input password again'
+        label='confirm password',
+        widget=PasswordInput(attrs={'class': 'form-control'}),
+        strip=False,
     )
 
     class Meta:
         model = UserInfo
-        fields = ['username', 'password', 'confirm_password' ,'telephone' ,'email']
+        fields = ['username', 'password', 'confirm_password', 'telephone', 'email']
         labels = {
             'username': 'username',
             'password': 'password',
@@ -29,6 +28,7 @@ class SignUpForm(ModelForm):
             'telephone': TextInput(attrs={'class': 'form-control'}),
             'email': TextInput(attrs={'class': 'form-control'}),
         }
+
 
 class SignInForm(ModelForm):
     class Meta:
