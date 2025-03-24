@@ -9,140 +9,60 @@ from authentication.forms import SignUpForm, SignInForm
 from authentication.models import UserInfo, ConfirmCode
 from eMallBackend import settings
 
+
 '''
  - 逻辑是，如果确认密码输入不对、电话重复、邮箱重复，注册请求都会被驳回
 '''
+def signUp(request, category):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
 
+        if form.is_valid():
+
+            if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
+                message = 'The passwords do not match'
+                # print(message)
+                return render(request, 'signup.html', {'form': form, 'message': message})
+
+            if UserInfo.objects.filter(telephone=form.cleaned_data['telephone']).exists():
+                message = 'Telephone number already registered'
+                # print(message)
+                return render(request, 'signup.html', {'form': form, 'message': message})
+
+            if UserInfo.objects.filter(email=form.cleaned_data['email']).exists():
+                message = 'Email already registered'
+                # print(message)
+                return render(request, 'signup.html', {'form': form, 'message': message})
+
+            user = UserInfo(username=form.cleaned_data['username'],
+                            password=make_password(form.cleaned_data['password']),
+                            telephone=form.cleaned_data['telephone'],
+                            email=form.cleaned_data['email'],
+                            category=category)
+            user.save()
+            code = makeConfirmCode(user)
+            sendMail(user.email, code)
+            message = 'Your account has been created'
+            # print(message)
+            return redirect('/auth/signin')  # 注册成功后重定向到登录页面
+
+    else:
+        form = SignUpForm()
+
+    return render(request, 'signup.html', {'form': form})
 
 def signUpUser(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-
-        if form.is_valid():
-
-            if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
-                message = 'The passwords do not match'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            if UserInfo.objects.filter(telephone=form.cleaned_data['telephone']).exists():
-                message = 'Telephone number already registered'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            if UserInfo.objects.filter(email=form.cleaned_data['email']).exists():
-                message = 'Email already registered'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            user = UserInfo(username=form.cleaned_data['username'],
-                            password=make_password(form.cleaned_data['password']),
-                            telephone=form.cleaned_data['telephone'],
-                            email=form.cleaned_data['email'], )
-            user.save()
-            code = makeConfirmCode(user)
-            sendMail(user.email, code)
-            message = 'Your account has been created'
-            # print(message)
-            return redirect('/signin')  # 注册成功后重定向到登录页面
-
-    else:
-        form = SignUpForm()
-
-    return render(request, 'signup.html', {'form': form})
-
-
-'''
- - 逻辑是，如果确认密码输入不对、电话重复、邮箱重复，注册请求都会被驳回
-'''
-
+    return signUp(request, 1)
 
 def signUpMerchant(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-
-        if form.is_valid():
-
-            if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
-                message = 'The passwords do not match'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            if UserInfo.objects.filter(telephone=form.cleaned_data['telephone']).exists():
-                message = 'Telephone number already registered'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            if UserInfo.objects.filter(email=form.cleaned_data['email']).exists():
-                message = 'Email already registered'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            user = UserInfo(username=form.cleaned_data['username'],
-                            password=make_password(form.cleaned_data['password']),
-                            telephone=form.cleaned_data['telephone'],
-                            email=form.cleaned_data['email'],
-                            category=2)
-            user.save()
-            code = makeConfirmCode(user)
-            sendMail(user.email, code)
-            message = 'Your account has been created'
-            # print(message)
-            return redirect('/signin')  # 注册成功后重定向到登录页面
-
-    else:
-        form = SignUpForm()
-
-    return render(request, 'signup.html', {'form': form})
-
-
-'''
- - 逻辑是，如果确认密码输入不对、电话重复、邮箱重复，注册请求都会被驳回
-'''
-
+    return signUp(request, 2)
 
 def signUpManager(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-
-        if form.is_valid():
-
-            if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
-                message = 'The passwords do not match'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            if UserInfo.objects.filter(telephone=form.cleaned_data['telephone']).exists():
-                message = 'Telephone number already registered'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            if UserInfo.objects.filter(email=form.cleaned_data['email']).exists():
-                message = 'Email already registered'
-                # print(message)
-                return render(request, 'signup.html', {'form': form, 'message': message})
-
-            user = UserInfo(username=form.cleaned_data['username'],
-                            password=make_password(form.cleaned_data['password']),
-                            telephone=form.cleaned_data['telephone'],
-                            email=form.cleaned_data['email'],
-                            category=3)
-            user.save()
-            code = makeConfirmCode(user)
-            sendMail(user.email, code)
-            message = 'Your account has been created'
-            # print(message)
-            return redirect('/signin')  # 注册成功后重定向到登录页面
-
-    else:
-        form = SignUpForm()
-
-    return render(request, 'signup.html', {'form': form})
-
+    return signUp(request, 3)
 
 def signIn(request):
     if request.session.get('is_login', None):
-        return redirect("/home")
+        return redirect("/home/index")
 
     if request.method == 'POST':
         form = SignInForm(request.POST)
